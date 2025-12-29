@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install @supabase/supabase-js @supabase/auth-helpers-nextjs @supabase/auth-ui-react @supabase/auth-ui-shared zod react-hook-form @hookform/resolvers @tanstack/react-query recharts date-fns zustand nanoid sharp)",
+      "Bash(npm install @supabase/ssr pdf-lib csv-parser bcryptjs)",
+      "Bash(npm install:*)",
+      "Bash(npm run dev)",
+      "Bash(timeout:*)",
+      "Bash(curl:*)",
+      "Bash(move:*)",
+      "Bash(git mv:*)",
+      "Bash(taskkill:*)",
+      "Bash(powershell:*)",
+      "Bash(robocopy:*)",
+      "Bash(ping:*)",
+      "Bash(find:*)",
+      "Bash(cat:*)",
+      "Bash(git checkout:*)",
+      "WebSearch",
+      "Bash(git add:*)"
+    ]
+  }
+}
