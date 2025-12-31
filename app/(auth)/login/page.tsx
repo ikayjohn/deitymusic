@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, Suspense } from "react"
+import { useState, useRef, Suspense } from "react"
 import { createBrowserClient } from "@/lib/supabase/client"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
@@ -9,13 +9,20 @@ import { Logo } from "@/components/logo"
 function LoginForm() {
  const router = useRouter()
  const searchParams = useSearchParams()
- const supabase = createBrowserClient()
+ const supabaseRef = useRef<ReturnType<typeof createBrowserClient> | null>(null)
  const [loading, setLoading] = useState(false)
  const [error, setError] = useState<string | null>(null)
  const [formData, setFormData] = useState({
  email: "",
  password: "",
  })
+
+ const getSupabase = () => {
+ if (!supabaseRef.current) {
+ supabaseRef.current = createBrowserClient()
+ }
+ return supabaseRef.current
+ }
 
  const redirectTo = searchParams.get("redirect") || "/dashboard"
 
@@ -26,6 +33,7 @@ function LoginForm() {
 
  try {
  console.log("Attempting login for:", formData.email)
+ const supabase = getSupabase()
 
  const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
  email: formData.email,
@@ -72,6 +80,7 @@ function LoginForm() {
  setError(null)
 
  try {
+ const supabase = getSupabase()
  const { error } = await supabase.auth.signInWithOAuth({
  provider: "google",
  options: {

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { createBrowserClient } from "@/lib/supabase/client"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
@@ -8,7 +8,7 @@ import { Logo } from "@/components/logo"
 
 export default function SignupPage() {
  const router = useRouter()
- const supabase = createBrowserClient()
+ const supabaseRef = useRef<ReturnType<typeof createBrowserClient> | null>(null)
  const [loading, setLoading] = useState(false)
  const [error, setError] = useState<string | null>(null)
  const [formData, setFormData] = useState({
@@ -18,20 +18,25 @@ export default function SignupPage() {
  accountType: "ARTIST" as "ARTIST" | "LABEL",
  })
 
+ const getSupabase = () => {
+ if (!supabaseRef.current) {
+ supabaseRef.current = createBrowserClient()
+ }
+ return supabaseRef.current
+ }
+
  const handleSubmit = async (e: React.FormEvent) => {
  e.preventDefault()
  setLoading(true)
  setError(null)
 
  try {
+ const supabase = getSupabase()
+
  // Validate password
  if (formData.password.length < 8) {
  throw new Error("Password must be at least 8 characters")
  }
-
- // Check if user already exists
- const { data: { user: existingUser } } = await supabase.auth.getUser()
- // Note: We can't check other users due to security, so we'll try to sign up and handle the error
 
  // Sign up the user
  const { data: { user }, error: signUpError } = await supabase.auth.signUp({
