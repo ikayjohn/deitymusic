@@ -1,5 +1,7 @@
 "use client"
 
+export const dynamic = "force-dynamic"
+
 import { useState, useEffect } from "react"
 import type { ActivityLog } from "@/lib/validations/admin"
 import { formatActivityAction, ActivityLogAction } from "@/lib/validations/admin"

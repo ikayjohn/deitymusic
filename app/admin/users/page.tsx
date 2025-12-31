@@ -1,5 +1,7 @@
 "use client"
 
+export const dynamic = "force-dynamic"
+
 import { useState, useEffect } from "react"
 import { UsersTable } from "@/components/admin/users-table"
 import { UserStatus, UserRole } from "@/lib/validations/admin"

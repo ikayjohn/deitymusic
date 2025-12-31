@@ -1,5 +1,7 @@
 "use client"
 
+export const dynamic = "force-dynamic"
+
 import { useState, useEffect } from "react"
 import type { WithdrawalRequestAdmin } from "@/lib/validations/admin"
 import { formatCurrencyUSD, formatCurrencyNGN } from "@/lib/validations/admin"
