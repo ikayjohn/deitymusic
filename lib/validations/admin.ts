@@ -167,7 +167,7 @@ export const adminStatsSchema = z.object({
       count: z.number(),
       percentage: z.number(),
     })),
-  })),
+  }),
   revenueChart: z.array(z.object({
     date: z.string(),
     revenue: z.number(),
