@@ -9,13 +9,14 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function updateSession(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({
-    request,
-  })
+  try {
+    let supabaseResponse = NextResponse.next({
+      request,
+    })
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
         getAll() {
@@ -79,4 +80,12 @@ export async function updateSession(request: NextRequest) {
   }
 
   return supabaseResponse
+  } catch (error) {
+    // If middleware fails, just continue to the page
+    // This prevents the entire app from breaking
+    console.error('Middleware error:', error)
+    return NextResponse.next({
+      request,
+    })
+  }
 }
