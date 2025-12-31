@@ -63,21 +63,8 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Check admin role for admin routes
-  if (isAdminPath && user) {
-    // Fetch user's role from database
-    const { data: userData } = await supabase
-      .from('users')
-      .select('account_type')
-      .eq('id', user.id)
-      .single()
-
-    if (!userData || userData.account_type !== 'ADMIN') {
-      const url = request.nextUrl.clone()
-      url.pathname = '/dashboard'
-      return NextResponse.redirect(url)
-    }
-  }
+  // Note: Admin role checking is handled in the admin layout and pages
+  // to avoid database queries in middleware which can fail at the edge
 
   // Redirect authenticated users from auth pages to dashboard
   const authPaths = ['/login', '/signup', '/forgot-password']
