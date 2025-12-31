@@ -2,6 +2,8 @@ import { createClient } from "@/lib/supabase/server"
 import { notFound } from "next/navigation"
 import { ReleaseDetailsClient } from "./release-details-client"
 
+export const dynamic = "force-dynamic"
+
 export default async function ReleaseDetailsPage({
  params,
 }: {

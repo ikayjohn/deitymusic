@@ -3,6 +3,8 @@ import { Header } from "@/components/layout/header"
 import { redirect } from "next/navigation"
 import { revalidatePath } from "next/cache"
 
+export const dynamic = "force-dynamic"
+
 export default async function SettingsPage() {
  const supabase = await createClient()
 
