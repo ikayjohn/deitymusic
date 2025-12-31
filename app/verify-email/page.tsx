@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { createBrowserClient } from "@/lib/supabase/client"
 import { useRouter, useSearchParams } from "next/navigation"
+import Link from "next/link"
 import { Logo } from "@/components/logo"
 
 export default function VerifyEmailPage() {

@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
 
     if (error) throw error
 
-    return NextResponse.json({ releases })
+    return NextResponse.json({ releases: releases as any })
   } catch (error) {
     console.error("Error fetching releases:", error)
     return NextResponse.json(
@@ -65,8 +65,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Create release
-    const { data: release, error } = await supabase
-      .from("releases")
+    const { data: release, error } = await (supabase
+      .from("releases") as any)
       .insert({
         user_id: user.id,
         title: body.title,
@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
 
     if (error) throw error
 
-    return NextResponse.json({ release }, { status: 201 })
+    return NextResponse.json({ release: release as any }, { status: 201 })
   } catch (error) {
     console.error("Error creating release:", error)
     return NextResponse.json(

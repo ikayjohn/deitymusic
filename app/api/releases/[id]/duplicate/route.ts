@@ -4,9 +4,10 @@ import { NextRequest, NextResponse } from "next/server"
 // POST /api/releases/[id]/duplicate - Duplicate a release
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -22,7 +23,7 @@ export async function POST(
         tracks(*),
         contributors(*)
       `)
-      .eq("id", params.id)
+      .eq("id", id)
       .eq("user_id", user.id)
       .single()
 
@@ -31,22 +32,22 @@ export async function POST(
     }
 
     // Create duplicated release
-    const { data: newRelease, error: createError } = await supabase
-      .from("releases")
+    const { data: newRelease, error: createError } = await (supabase
+      .from("releases") as any)
       .insert({
         user_id: user.id,
-        title: `${originalRelease.title} (Copy)`,
-        release_type: originalRelease.release_type,
+        title: `${(originalRelease as any).title} (Copy)`,
+        release_type: (originalRelease as any).release_type,
         status: "DRAFT",
-        artwork_url: originalRelease.artwork_url,
-        genre: originalRelease.genre,
-        sub_genre: originalRelease.sub_genre,
-        explicit_content: originalRelease.explicit_content,
-        language: originalRelease.language,
-        copyright_year: originalRelease.copyright_year,
-        copyright_holder: originalRelease.copyright_holder,
-        price_tier: originalRelease.price_tier,
-        territories: originalRelease.territories,
+        artwork_url: (originalRelease as any).artwork_url,
+        genre: (originalRelease as any).genre,
+        sub_genre: (originalRelease as any).sub_genre,
+        explicit_content: (originalRelease as any).explicit_content,
+        language: (originalRelease as any).language,
+        copyright_year: (originalRelease as any).copyright_year,
+        copyright_holder: (originalRelease as any).copyright_holder,
+        price_tier: (originalRelease as any).price_tier,
+        territories: (originalRelease as any).territories,
         // Don't copy UPC, ISRCs, or dates
         upc: null,
         original_release_date: null,
@@ -58,9 +59,9 @@ export async function POST(
     if (createError) throw createError
 
     // Copy tracks (without ISRC)
-    if (originalRelease.tracks && originalRelease.tracks.length > 0) {
-      const tracksToInsert = originalRelease.tracks.map(track => ({
-        release_id: newRelease.id,
+    if ((originalRelease as any).tracks && (originalRelease as any).tracks.length > 0) {
+      const tracksToInsert = (originalRelease as any).tracks.map((track: any) => ({
+        release_id: (newRelease as any).id,
         title: `${track.title} (Copy)`,
         duration: track.duration,
         audio_file_url: track.audio_file_url,
@@ -75,17 +76,17 @@ export async function POST(
         track_number: track.track_number,
       }))
 
-      const { error: tracksError } = await supabase
-        .from("tracks")
+      const { error: tracksError } = await (supabase
+        .from("tracks") as any)
         .insert(tracksToInsert)
 
       if (tracksError) throw tracksError
     }
 
     // Copy contributors
-    if (originalRelease.contributors && originalRelease.contributors.length > 0) {
-      const contributorsToInsert = originalRelease.contributors.map(contributor => ({
-        release_id: newRelease.id,
+    if ((originalRelease as any).contributors && (originalRelease as any).contributors.length > 0) {
+      const contributorsToInsert = (originalRelease as any).contributors.map((contributor: any) => ({
+        release_id: (newRelease as any).id,
         track_id: null, // Contributors at release level
         name: contributor.name,
         role: contributor.role,
@@ -94,8 +95,8 @@ export async function POST(
         phone: contributor.phone,
       }))
 
-      const { error: contributorsError } = await supabase
-        .from("contributors")
+      const { error: contributorsError } = await (supabase
+        .from("contributors") as any)
         .insert(contributorsToInsert)
 
       if (contributorsError) throw contributorsError

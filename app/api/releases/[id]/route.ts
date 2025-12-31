@@ -4,9 +4,10 @@ import { NextRequest, NextResponse } from "next/server"
 // GET /api/releases/[id] - Fetch a single release
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -22,7 +23,7 @@ export async function GET(
         contributors(*),
         platforms(*)
       `)
-      .eq("id", params.id)
+      .eq("id", id)
       .eq("user_id", user.id)
       .single()
 
@@ -32,7 +33,7 @@ export async function GET(
       return NextResponse.json({ error: "Release not found" }, { status: 404 })
     }
 
-    return NextResponse.json({ release })
+    return NextResponse.json({ release: release as any })
   } catch (error) {
     console.error("Error fetching release:", error)
     return NextResponse.json(
@@ -45,9 +46,10 @@ export async function GET(
 // PATCH /api/releases/[id] - Update a release
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -59,7 +61,7 @@ export async function PATCH(
     const { data: existingRelease } = await supabase
       .from("releases")
       .select("id, status")
-      .eq("id", params.id)
+      .eq("id", id)
       .eq("user_id", user.id)
       .single()
 
@@ -68,7 +70,7 @@ export async function PATCH(
     }
 
     // Don't allow edits to live releases
-    if (existingRelease.status === "LIVE") {
+    if ((existingRelease as any).status === "LIVE") {
       return NextResponse.json(
         { error: "Cannot edit live releases" },
         { status: 400 }
@@ -78,19 +80,19 @@ export async function PATCH(
     const body = await request.json()
 
     // Update release
-    const { data: release, error } = await supabase
-      .from("releases")
+    const { data: release, error } = await (supabase
+      .from("releases") as any)
       .update({
         ...body,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", params.id)
+      .eq("id", id)
       .select()
       .single()
 
     if (error) throw error
 
-    return NextResponse.json({ release })
+    return NextResponse.json({ release: release as any })
   } catch (error) {
     console.error("Error updating release:", error)
     return NextResponse.json(
@@ -103,9 +105,10 @@ export async function PATCH(
 // DELETE /api/releases/[id] - Delete a release
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -117,7 +120,7 @@ export async function DELETE(
     const { data: existingRelease } = await supabase
       .from("releases")
       .select("id, status")
-      .eq("id", params.id)
+      .eq("id", id)
       .eq("user_id", user.id)
       .single()
 
@@ -126,7 +129,7 @@ export async function DELETE(
     }
 
     // Don't allow deletion of live releases
-    if (existingRelease.status === "LIVE") {
+    if ((existingRelease as any).status === "LIVE") {
       return NextResponse.json(
         { error: "Cannot delete live releases. Use takedown instead." },
         { status: 400 }
@@ -137,7 +140,7 @@ export async function DELETE(
     const { error } = await supabase
       .from("releases")
       .delete()
-      .eq("id", params.id)
+      .eq("id", id)
 
     if (error) throw error
 

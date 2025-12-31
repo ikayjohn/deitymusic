@@ -4,7 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { createBrowserClient } from "@/lib/supabase/client"
 import { useEffect, useState } from "react"
-import type { User } from "@/types/supabase"
+import type { Users } from "@/types/supabase"
 import { Logo } from "@/components/logo"
 
 interface NavItem {
@@ -152,7 +152,7 @@ const navigation: NavItem[] = [
 export function Sidebar() {
  const pathname = usePathname()
  const supabase = createBrowserClient()
- const [user, setUser] = useState<User | null>(null)
+ const [user, setUser] = useState<Users | null>(null)
 
  useEffect(() => {
  const getUser = async () => {

@@ -3,7 +3,6 @@
 import { createBrowserClient } from "@/lib/supabase/client"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import type { User } from "@/types/supabase"
 
 interface HeaderProps {
  title: string

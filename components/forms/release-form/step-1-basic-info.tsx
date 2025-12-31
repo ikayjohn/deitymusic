@@ -31,7 +31,7 @@ export function Step1BasicInfo({
  watch,
  formState: { errors },
  } = useForm<ReleaseBasicInfo>({
- resolver: zodResolver(releaseBasicInfoSchema),
+ resolver: zodResolver(releaseBasicInfoSchema as any),
  defaultValues: data.basicInfo || {
  releaseType: "SINGLE",
  explicitContent: false,

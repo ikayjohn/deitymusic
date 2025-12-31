@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
  .gte("end_date", new Date().toISOString())
  .order("created_at", { ascending: false })
  .limit(1)
- .maybeSingle()
+ .maybeSingle() as any
 
  // Generate unique payment reference
  const reference = `DEITY_${user.id}_${PLAN_NAMES[plan]}_${Date.now()}`
@@ -62,8 +62,8 @@ export async function POST(request: NextRequest) {
  endDate.setFullYear(endDate.getFullYear() + 1)
 
  // Create pending subscription record
- const { error: subError } = await supabase
- .from("subscriptions")
+ const { error: subError } = await (supabase
+ .from("subscriptions") as any)
  .insert({
  user_id: user.id,
  plan: PLAN_NAMES[plan],

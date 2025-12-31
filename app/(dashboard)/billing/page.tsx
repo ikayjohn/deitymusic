@@ -21,8 +21,8 @@ export default async function BillingPage() {
 
  // Get active subscription
  const activeSubscription = subscriptions?.find(
- (sub) => sub.status === "ACTIVE" && new Date(sub.end_date) > new Date()
- )
+ (sub: any) => sub.status === "ACTIVE" && new Date(sub.end_date) > new Date()
+ ) as any
 
  return (
  <>
@@ -223,7 +223,7 @@ export default async function BillingPage() {
  {subscriptions && subscriptions.length > 0 ? (
  <div className="border border-border bg-background shadow-sm">
  <div className="divide-y divide-border">
- {subscriptions.map((sub) => (
+ {subscriptions.map((sub: any) => (
  <div
  key={sub.id}
  className="flex items-center justify-between p-4 hover:bg-muted/50"

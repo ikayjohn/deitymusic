@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
 
         if (!existingUser) {
           // Create user profile for OAuth signup
-          await supabase.from("users").insert({
+          await (supabase.from("users") as any).insert({
             id: user.id,
             email: user.email!,
             name: user.user_metadata.name || user.email!.split("@")[0],
@@ -33,8 +33,8 @@ export async function GET(request: NextRequest) {
         }
 
         // Update last login
-        await supabase
-          .from("users")
+        await (supabase
+          .from("users") as any)
           .update({ last_login_at: new Date().toISOString() })
           .eq("id", user.id)
       }

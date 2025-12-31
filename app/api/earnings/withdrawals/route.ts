@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     // For now, use mock balance
     const currentBalance = 1647.50 // Mock balance in USD
 
-    if (validatedData.amount > currentBalance) {
+    if ((validatedData as any).amount > currentBalance) {
       return NextResponse.json(
         { error: "Insufficient balance" },
         { status: 400 }
@@ -78,8 +78,8 @@ export async function POST(request: NextRequest) {
     // Mock response
     const withdrawal = {
       id: `wd-${Date.now()}`,
-      amount: validatedData.amount,
-      paymentMethod: validatedData.paymentMethod,
+      amount: (validatedData as any).amount,
+      paymentMethod: (validatedData as any).paymentMethod,
       status: WithdrawalStatus.PENDING,
       createdAt: new Date().toISOString(),
       estimatedCompletion: new Date(

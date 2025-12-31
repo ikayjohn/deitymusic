@@ -45,11 +45,11 @@ export default async function DashboardPage() {
 
  // Calculate stats
  const totalReleases = releases?.length || 0
- const liveReleases = releases?.filter(r => r.status === "LIVE").length || 0
- const totalStreams = analytics?.reduce((sum, a) => sum + (a.streams || 0), 0) || 0
- const totalRevenue = transactions?.reduce((sum, t) => sum + (t.amount || 0), 0) || 0
+ const liveReleases = releases?.filter((r: any) => r.status === "LIVE").length || 0
+ const totalStreams = analytics?.reduce((sum, a: any) => sum + (a.streams || 0), 0) || 0
+ const totalRevenue = transactions?.reduce((sum, t: any) => sum + (t.amount || 0), 0) || 0
 
- const hasActiveSubscription = subscription && new Date(subscription.end_date) > new Date()
+ const hasActiveSubscription = subscription && new Date((subscription as any).end_date) > new Date()
 
  // Calculate artist usage based on subscription tier
  const getArtistLimit = (plan: string | null) => {
@@ -61,7 +61,7 @@ export default async function DashboardPage() {
  }
  }
 
- const artistLimit = hasActiveSubscription ? getArtistLimit(subscription?.plan || null) : 0
+ const artistLimit = hasActiveSubscription ? getArtistLimit((subscription as any)?.plan || null) : 0
  // TODO: Fetch actual artist count from database when artist profiles are implemented
  const artistsUsed = hasActiveSubscription ? Math.min(1, artistLimit) : 0 // Placeholder - will be fetched from DB
 
@@ -121,7 +121,7 @@ export default async function DashboardPage() {
  name: "Artists Used",
  value: hasActiveSubscription ? `${artistsUsed}/${artistLimit}` : "0/0",
  change: hasActiveSubscription
- ? `Expires ${new Date(subscription.end_date).toLocaleDateString("en-NG", { month: "short", day: "numeric", year: "numeric" })}`
+ ? `Expires ${new Date((subscription as any).end_date).toLocaleDateString("en-NG", { month: "short", day: "numeric", year: "numeric" })}`
  : "No Subscription",
  icon: (
  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -174,10 +174,10 @@ export default async function DashboardPage() {
  <div className="flex items-center justify-between">
  <div>
  <p className="font-semibold text-success">
- Active {subscription.plan} Plan
+ Active {(subscription as any).plan} Plan
  </p>
  <p className="text-sm text-muted-foreground">
- Valid until {new Date(subscription.end_date).toLocaleDateString("en-NG", {
+ Valid until {new Date((subscription as any).end_date).toLocaleDateString("en-NG", {
  year: "numeric",
  month: "long",
  day: "numeric",
@@ -310,7 +310,7 @@ export default async function DashboardPage() {
  {releases && releases.length > 0 ? (
  <div className="bg-white border border-border shadow-sm">
  <div className="divide-y divide-border">
- {releases.slice(0, 5).map((release) => (
+ {releases.slice(0, 5).map((release: any) => (
  <div
  key={release.status}
  className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"

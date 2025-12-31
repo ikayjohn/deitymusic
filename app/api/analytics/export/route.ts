@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get analytics for each release
-    const releaseIds = releases.map((r) => r.id)
+    const releaseIds = (releases as any).map((r: any) => r.id)
     const { data: analytics } = await supabase
       .from("analytics")
       .select("release_id, platform, country, streams, downloads, revenue, date")
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     if (format === "csv") {
       // Generate CSV
       const headers = ["Release ID", "Platform", "Country", "Streams", "Downloads", "Revenue", "Date"]
-      const rows = analytics?.map((a) => [
+      const rows = analytics?.map((a: any) => [
         a.release_id,
         a.platform || "All",
         a.country || "All",

@@ -167,7 +167,7 @@ export default function AdminDashboardPage() {
  borderRadius: "0.5rem",
  }}
  labelFormatter={(value) => new Date(value).toLocaleDateString("en-US", { month: "long", year: "numeric" })}
- formatter={(value: number) => [formatCurrencyUSD(value), ""]}
+ formatter={(value: number | string | undefined) => [formatCurrencyUSD(Number(value || 0)), ""]}
  />
  <Legend />
  <Bar dataKey="revenue" fill="hsl(var(--primary))" name="Revenue" radius={[4, 4, 0, 0]} />
@@ -189,7 +189,7 @@ export default function AdminDashboardPage() {
  cx="50%"
  cy="50%"
  labelLine={false}
- label={({ type, percentage }) => `${type}: ${percentage.toFixed(0)}%`}
+ label={(props: any) => `${props.type}: ${props.percentage.toFixed(0)}%`}
  outerRadius={80}
  fill="#8884d8"
  dataKey="count"

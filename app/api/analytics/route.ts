@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
         .eq("release_id", query.releaseId)
 
       if (tracks && tracks.length > 0) {
-        filteredTopTracks = tracks.slice(0, 10).map((track, i) => ({
+        filteredTopTracks = (tracks as any).slice(0, 10).map((track: any, i: number) => ({
           ...track,
           streams: Math.floor(Math.random() * 100000) + 10000 - i * 5000,
           revenue: Math.random() * 5000 + 500 - i * 500,

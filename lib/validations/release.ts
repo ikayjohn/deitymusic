@@ -8,7 +8,7 @@ export const releaseBasicInfoSchema = z.object({
   title: z.string().min(1, "Title is required").max(255, "Title too long"),
   releaseType: z.enum(["SINGLE", "EP", "ALBUM"], {
     required_error: "Release type is required",
-  }),
+  } as any),
   genre: z.string().min(1, "Genre is required"),
   subGenre: z.string().optional(),
   explicitContent: z.boolean().default(false),
@@ -57,7 +57,7 @@ export const contributorSchema = z.object({
     "ENGINEER",
   ], {
     required_error: "Role is required",
-  }),
+  } as any),
   sharePercentage: z.number().min(0).max(100).default(0),
   email: z.string().email().optional().or(z.literal("")),
   phone: z.string().optional(),

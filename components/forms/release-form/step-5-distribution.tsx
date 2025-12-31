@@ -60,7 +60,7 @@ export function Step5Distribution({
  watch,
  formState: { errors },
  } = useForm<Distribution>({
- resolver: zodResolver(distributionSchema),
+ resolver: zodResolver(distributionSchema as any),
  defaultValues: distribution,
  })
 
@@ -69,7 +69,7 @@ export function Step5Distribution({
  const releaseDate = watch("digitalReleaseDate")
 
  const handlePlatformToggle = (platformId: string) => {
- const newPlatforms = selectedPlatforms.includes(platformId)
+ const newPlatforms = selectedPlatforms.includes(platformId as any)
  ? selectedPlatforms.filter((p) => p !== platformId)
  : [...selectedPlatforms, platformId] as any
 
@@ -164,7 +164,7 @@ export function Step5Distribution({
  value={territory.code}
  {...register("territories")}
  className="sr-only"
- onChange={() => handleTerroryToggle(territory.code)}
+ onChange={() => handleTerritoryToggle(territory.code)}
  />
  {territory.name}
  </label>

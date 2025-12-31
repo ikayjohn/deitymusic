@@ -76,13 +76,13 @@ export async function POST(request: NextRequest) {
  }
 
  // Update subscription to ACTIVE
- const { error: updateError } = await supabase
- .from("subscriptions")
+ const { error: updateError } = await (supabase
+ .from("subscriptions") as any)
  .update({
  status: "ACTIVE",
  payment_method: "Paystack",
  })
- .eq("id", subscription.id)
+ .eq("id", (subscription as any).id)
 
  if (updateError) {
  console.error("Failed to activate subscription:", updateError)
@@ -92,7 +92,7 @@ export async function POST(request: NextRequest) {
  )
  }
 
- console.log("Subscription activated:", subscription.id)
+ console.log("Subscription activated:", (subscription as any).id)
  }
 
  return NextResponse.json({ received: true }, { status: 200 })

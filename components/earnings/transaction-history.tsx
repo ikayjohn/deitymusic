@@ -1,25 +1,28 @@
 "use client"
 
 import { useState } from "react"
-import type { Transaction, TransactionType } from "@/lib/validations/earnings"
+import type { Transaction } from "@/lib/validations/earnings"
 import {
  formatCurrencyUSD,
  getTransactionTypeLabel,
+ TransactionType,
 } from "@/lib/validations/earnings"
+
+type TransactionTypeValue = typeof TransactionType[keyof typeof TransactionType]
 
 interface TransactionHistoryProps {
  transactions: Transaction[]
 }
 
 export function TransactionHistory({ transactions }: TransactionHistoryProps) {
- const [filter, setFilter] = useState<TransactionType | "ALL">("ALL")
+ const [filter, setFilter] = useState<TransactionTypeValue | "ALL">("ALL")
 
  const filteredTransactions =
  filter === "ALL"
  ? transactions
  : transactions.filter((t) => t.type === filter)
 
- const transactionTypes: Array<TransactionType | "ALL"> = [
+ const transactionTypes: Array<TransactionTypeValue | "ALL"> = [
  "ALL",
  "EARNING",
  "WITHDRAWAL",
@@ -39,7 +42,7 @@ export function TransactionHistory({ transactions }: TransactionHistoryProps) {
  <select
  value={filter}
  onChange={(e) =>
- setFilter(e.target.value as TransactionType | "ALL")
+ setFilter(e.target.value as TransactionTypeValue | "ALL")
  }
  className="border border-input bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
  >

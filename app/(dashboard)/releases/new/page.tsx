@@ -24,7 +24,7 @@ export default async function NewReleasePage() {
  .limit(1)
  .single()
 
- const hasActiveSubscription = subscription && new Date(subscription.end_date) > new Date()
+ const hasActiveSubscription = subscription && new Date((subscription as any).end_date) > new Date()
 
  // If no active subscription, show upgrade prompt
  if (!hasActiveSubscription) {
@@ -69,10 +69,10 @@ export default async function NewReleasePage() {
  <div className="flex items-center justify-between">
  <div>
  <p className="font-semibold text-success">
- Active {subscription.plan} Plan
+ Active {(subscription as any).plan} Plan
  </p>
  <p className="text-sm text-muted-foreground">
- Valid until {new Date(subscription.end_date).toLocaleDateString()}
+ Valid until {new Date((subscription as any).end_date).toLocaleDateString()}
  </p>
  </div>
  <a

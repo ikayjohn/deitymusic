@@ -25,14 +25,14 @@ export async function GET() {
  .limit(1)
  .single()
 
- const hasActiveSubscription = subscription && new Date(subscription.end_date) > new Date()
+ const hasActiveSubscription = subscription && new Date((subscription as any).end_date) > new Date()
 
  return NextResponse.json({
  hasSubscription: hasActiveSubscription,
  subscription: hasActiveSubscription ? {
- plan: subscription.plan,
- endDate: subscription.end_date,
- startDate: subscription.start_date,
+ plan: (subscription as any).plan,
+ endDate: (subscription as any).end_date,
+ startDate: (subscription as any).start_date,
  } : null,
  })
  } catch (error) {

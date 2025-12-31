@@ -30,7 +30,7 @@ export default async function SettingsPage() {
  .limit(1)
  .maybeSingle()
 
- const hasActiveSubscription = subscription && new Date(subscription.end_date) > new Date()
+ const hasActiveSubscription = subscription && new Date((subscription as any).end_date) > new Date()
 
  async function updateProfile(formData: FormData) {
  "use server"
@@ -40,7 +40,7 @@ export default async function SettingsPage() {
  const { data: { user } } = await supabase.auth.getUser()
 
  if (!user) {
- return { error: "Not authenticated" }
+ return
  }
 
  const name = formData.get("name") as string
@@ -52,8 +52,8 @@ export default async function SettingsPage() {
  })
 
  // Update profile
- const { error } = await supabase
- .from("users")
+ const { error } = await (supabase
+ .from("users") as any)
  .update({
  name,
  phone,
@@ -62,7 +62,7 @@ export default async function SettingsPage() {
  .eq("id", user.id)
 
  if (error) {
- return { error: error.message }
+ throw new Error(error.message)
  }
 
  revalidatePath("/settings")
@@ -77,7 +77,7 @@ export default async function SettingsPage() {
  const { data: { user } } = await supabase.auth.getUser()
 
  if (!user) {
- return { error: "Not authenticated" }
+ return
  }
 
  const newEmail = formData.get("email") as string
@@ -87,11 +87,10 @@ export default async function SettingsPage() {
  })
 
  if (error) {
- return { error: error.message }
+ throw new Error(error.message)
  }
 
  revalidatePath("/settings")
- return { success: "Email update confirmation sent. Please check your inbox." }
  }
 
  async function updatePassword(formData: FormData) {
@@ -102,13 +101,13 @@ export default async function SettingsPage() {
  const { data: { user } } = await supabase.auth.getUser()
 
  if (!user) {
- return { error: "Not authenticated" }
+ return
  }
 
  const password = formData.get("password") as string
 
  if (password.length < 8) {
- return { error: "Password must be at least 8 characters" }
+ throw new Error("Password must be at least 8 characters")
  }
 
  const { error } = await supabase.auth.updateUser({
@@ -116,11 +115,10 @@ export default async function SettingsPage() {
  })
 
  if (error) {
- return { error: error.message }
+ throw new Error(error.message)
  }
 
  revalidatePath("/settings")
- return { success: "Password updated successfully" }
  }
 
  return (
@@ -140,7 +138,7 @@ export default async function SettingsPage() {
  type="text"
  name="name"
  id="name"
- defaultValue={profile?.name || user.user_metadata?.name || ""}
+ defaultValue={(profile as any)?.name || user.user_metadata?.name || ""}
  required
  className="w-full border border-input bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
  placeholder="Enter your full name"
@@ -171,7 +169,7 @@ export default async function SettingsPage() {
  type="tel"
  name="phone"
  id="phone"
- defaultValue={profile?.phone || ""}
+ defaultValue={(profile as any)?.phone || ""}
  className="w-full border border-input bg-background px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
  placeholder="+234 XXX XXX XXXX"
  />
@@ -184,7 +182,7 @@ export default async function SettingsPage() {
  <input
  type="text"
  id="accountType"
- defaultValue={profile?.account_type || "ARTIST"}
+ defaultValue={(profile as any)?.account_type || "ARTIST"}
  disabled
  className="w-full border border-input bg-muted px-4 py-2 text-sm text-muted-foreground cursor-not-allowed"
  />
@@ -210,9 +208,9 @@ export default async function SettingsPage() {
  <div className="space-y-4">
  <div className="flex items-center justify-between border-b border-border pb-4">
  <div>
- <p className="font-semibold">{subscription.plan} Plan</p>
+ <p className="font-semibold">{(subscription as any).plan} Plan</p>
  <p className="text-sm text-muted-foreground">
- Active until {new Date(subscription.end_date).toLocaleDateString("en-NG", {
+ Active until {new Date((subscription as any).end_date).toLocaleDateString("en-NG", {
  year: "numeric",
  month: "long",
  day: "numeric",
@@ -227,16 +225,16 @@ export default async function SettingsPage() {
  <div className="space-y-2 text-sm">
  <div className="flex justify-between">
  <span className="text-muted-foreground">Amount Paid</span>
- <span className="font-semibold">₦{Number(subscription.amount).toLocaleString()}</span>
+ <span className="font-semibold">₦{Number((subscription as any).amount).toLocaleString()}</span>
  </div>
  <div className="flex justify-between">
  <span className="text-muted-foreground">Payment Method</span>
- <span className="font-semibold">{subscription.payment_method || "Paystack"}</span>
+ <span className="font-semibold">{(subscription as any).payment_method || "Paystack"}</span>
  </div>
  <div className="flex justify-between">
  <span className="text-muted-foreground">Started On</span>
  <span className="font-semibold">
- {new Date(subscription.start_date).toLocaleDateString("en-NG", {
+ {new Date((subscription as any).start_date).toLocaleDateString("en-NG", {
  year: "numeric",
  month: "short",
  day: "numeric",

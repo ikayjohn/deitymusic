@@ -53,12 +53,12 @@ export function GeographicBreakdown({ data }: GeographicBreakdownProps) {
  border: "1px solid hsl(var(--border))",
  borderRadius: "0.5rem",
  }}
- formatter={(value: number, name: string) => [
- `${value.toLocaleString()} streams`,
+ formatter={(value: number | undefined, name: string | undefined) => [
+ `${(value || 0).toLocaleString()} streams`,
  formatCurrencyUSD(sortedData.find((d) => d.country === name)?.revenue || 0),
  ]}
  />
- <Bar dataKey="streams" radius={[0, 4]}>
+ <Bar dataKey="streams" radius={[0, 4, 0, 0]}>
  {sortedData.map((entry) => (
  <Cell
  key={entry.country}

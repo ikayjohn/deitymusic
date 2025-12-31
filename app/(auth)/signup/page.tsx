@@ -57,7 +57,7 @@ export default function SignupPage() {
  // User profile is automatically created by database trigger
  // If email verification is disabled in Supabase, redirect to dashboard
  // Otherwise, redirect to email verification page
- if (user && user.email_confirmed) {
+ if (user && user.email_confirmed_at) {
  router.push("/dashboard")
  } else {
  router.push("/verify-email?email=" + encodeURIComponent(formData.email))

@@ -32,7 +32,7 @@ export default async function VerifyPaymentPage({
  .limit(1)
  .maybeSingle()
 
- const isActivated = subscription?.status === "ACTIVE"
+ const isActivated = (subscription as any)?.status === "ACTIVE"
 
  if (isActivated) {
  // Payment successful, redirect to success page

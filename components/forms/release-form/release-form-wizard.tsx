@@ -30,7 +30,7 @@ export function ReleaseFormWizard({ releaseId }: ReleaseFormWizardProps) {
  const [formData, setFormData] = useState<Partial<ReleaseFormData>>({
  basicInfo: undefined,
  tracks: [],
- artwork: {},
+ artwork: {} as any,
  contributors: [],
  distribution: undefined,
  })

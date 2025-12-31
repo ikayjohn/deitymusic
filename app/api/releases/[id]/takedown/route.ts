@@ -4,9 +4,10 @@ import { NextRequest, NextResponse } from "next/server"
 // POST /api/releases/[id]/takedown - Request a takedown
 export async function POST(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params
     const supabase = await createClient()
     const { data: { user } } = await supabase.auth.getUser()
 
@@ -18,7 +19,7 @@ export async function POST(
     const { data: release } = await supabase
       .from("releases")
       .select("id, status")
-      .eq("id", params.id)
+      .eq("id", id)
       .eq("user_id", user.id)
       .single()
 
@@ -27,7 +28,7 @@ export async function POST(
     }
 
     // Only allow takedown for live releases
-    if (release.status !== "LIVE") {
+    if ((release as any).status !== "LIVE") {
       return NextResponse.json(
         { error: "Can only request takedown for live releases" },
         { status: 400 }
@@ -46,18 +47,18 @@ export async function POST(
     }
 
     // Update release status
-    const { error: updateError } = await supabase
-      .from("releases")
+    const { error: updateError } = await (supabase
+      .from("releases") as any)
       .update({ status: "TAKEDOWN" })
-      .eq("id", params.id)
+      .eq("id", id)
 
     if (updateError) throw updateError
 
     // Record in takedown history
-    const { error: historyError } = await supabase
-      .from("takedown_history")
+    const { error: historyError } = await (supabase
+      .from("takedown_history") as any)
       .insert({
-        release_id: params.id,
+        release_id: id,
         reason: reason.trim(),
         requested_by: user.id,
         takedown_type: "artist_request",

@@ -23,7 +23,7 @@ export default async function SubscriptionPage() {
  .limit(1)
  .single()
 
- const hasActiveSubscription = subscription && new Date(subscription.end_date) > new Date()
+ const hasActiveSubscription = subscription && new Date((subscription as any).end_date) > new Date()
 
  const plans = [
  {
@@ -111,9 +111,9 @@ export default async function SubscriptionPage() {
  <div className="mb-8 border border-border bg-success/10 p-6">
  <div className="flex items-center justify-between">
  <div>
- <h3 className="font-semibold text-success">You have an active {subscription.plan} plan</h3>
+ <h3 className="font-semibold text-success">You have an active {(subscription as any).plan} plan</h3>
  <p className="mt-1 text-sm text-muted-foreground">
- Your plan is valid until {new Date(subscription.end_date).toLocaleDateString("en-NG", {
+ Your plan is valid until {new Date((subscription as any).end_date).toLocaleDateString("en-NG", {
  year: "numeric",
  month: "long",
  day: "numeric",

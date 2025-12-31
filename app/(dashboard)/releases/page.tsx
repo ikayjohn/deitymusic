@@ -16,7 +16,7 @@ export default async function ReleasesPage() {
  .from("releases")
  .select("*")
  .eq("user_id", user.id)
- .order("created_at", { ascending: false })
+ .order("created_at", { ascending: false }) as any
 
  const getStatusColor = (status: string) => {
  switch (status) {
@@ -68,7 +68,7 @@ export default async function ReleasesPage() {
  {/* Releases Grid */}
  {releases && releases.length > 0 ? (
  <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
- {releases.map((release) => (
+ {releases.map((release: any) => (
  <div
  key={release.id}
  className="group relative overflow-hidden border border-border bg-background shadow-sm transition-shadow hover:shadow-md"

@@ -8,13 +8,15 @@ import {
  ModerationAction,
 } from "@/lib/validations/admin"
 
+type ModerationActionValue = typeof ModerationAction[keyof typeof ModerationAction]
+
 export default function AdminModerationPage() {
  const [items, setItems] = useState<ModerationItem[]>([])
  const [loading, setLoading] = useState(true)
  const [filter, setFilter] = useState<string>("")
  const [selectedItem, setSelectedItem] = useState<ModerationItem | null>(null)
  const [showActionModal, setShowActionModal] = useState(false)
- const [actionType, setActionType] = useState<ModerationAction>(ModerationAction.APPROVED)
+ const [actionType, setActionType] = useState<ModerationActionValue>(ModerationAction.APPROVED)
  const [reason, setReason] = useState("")
 
  useEffect(() => {

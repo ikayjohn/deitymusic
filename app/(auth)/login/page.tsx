@@ -50,7 +50,7 @@ export default function LoginPage() {
  try {
  await supabase
  .from("users")
- .update({ last_login_at: new Date().toISOString() })
+ .update({ last_login_at: new Date().toISOString() } as never)
  .eq("id", signInData.user.id)
  } catch (updateError) {
  console.warn("Failed to update last_login:", updateError)

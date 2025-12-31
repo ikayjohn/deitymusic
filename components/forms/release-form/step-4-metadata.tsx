@@ -29,7 +29,7 @@ export function Step4Metadata({
  reset,
  formState: { errors },
  } = useForm<Contributor>({
- resolver: zodResolver(contributorSchema),
+ resolver: zodResolver(contributorSchema as any),
  defaultValues: {
  role: "PRIMARY_ARTIST",
  sharePercentage: 0,

@@ -64,7 +64,7 @@ export function Step3Artwork({
  artwork: {
  ...data.artwork,
  url: result.url,
- },
+ } as any,
  })
  } catch (error) {
  console.error("Upload error:", error)
