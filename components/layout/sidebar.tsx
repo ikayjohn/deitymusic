@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { createBrowserClient } from "@/lib/supabase/client"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import type { Users } from "@/types/supabase"
 import { Logo } from "@/components/logo"
 
@@ -151,11 +151,19 @@ const navigation: NavItem[] = [
 
 export function Sidebar() {
  const pathname = usePathname()
- const supabase = createBrowserClient()
+ const supabaseRef = useRef<ReturnType<typeof createBrowserClient> | null>(null)
  const [user, setUser] = useState<Users | null>(null)
+
+ const getSupabase = () => {
+ if (!supabaseRef.current) {
+ supabaseRef.current = createBrowserClient()
+ }
+ return supabaseRef.current
+ }
 
  useEffect(() => {
  const getUser = async () => {
+ const supabase = getSupabase()
  const { data: { user: authUser } } = await supabase.auth.getUser()
  if (authUser) {
  const { data } = await supabase
@@ -167,9 +175,10 @@ export function Sidebar() {
  }
  }
  getUser()
- }, [supabase])
+ }, [])
 
  const handleSignOut = async () => {
+ const supabase = getSupabase()
  await supabase.auth.signOut()
  window.location.href = "/login"
  }
