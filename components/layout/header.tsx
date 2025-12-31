@@ -1,7 +1,7 @@
 "use client"
 
 import { createBrowserClient } from "@/lib/supabase/client"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
 import { useRouter } from "next/navigation"
 
 interface HeaderProps {
@@ -9,12 +9,20 @@ interface HeaderProps {
 }
 
 export function Header({ title }: HeaderProps) {
- const supabase = createBrowserClient()
+ const supabaseRef = useRef<ReturnType<typeof createBrowserClient> | null>(null)
  const router = useRouter()
  const [notificationCount, setNotificationCount] = useState(0)
 
+ const getSupabase = () => {
+ if (!supabaseRef.current) {
+ supabaseRef.current = createBrowserClient()
+ }
+ return supabaseRef.current
+ }
+
  useEffect(() => {
  const fetchNotifications = async () => {
+ const supabase = getSupabase()
  const { data: { user } } = await supabase.auth.getUser()
  if (user) {
  const { count } = await supabase
@@ -28,7 +36,7 @@ export function Header({ title }: HeaderProps) {
  }
 
  fetchNotifications()
- }, [supabase])
+ }, [])
 
  return (
  <header className="flex h-14 items-center justify-between border-b border-border bg-white px-6">
