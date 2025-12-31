@@ -1,25 +1,33 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, Suspense } from "react"
 import { createBrowserClient } from "@/lib/supabase/client"
 import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Logo } from "@/components/logo"
 
-export default function VerifyEmailPage() {
+function VerifyEmailContent() {
  const router = useRouter()
  const searchParams = useSearchParams()
- const supabase = createBrowserClient()
+ const supabaseRef = useRef<ReturnType<typeof createBrowserClient> | null>(null)
  const email = searchParams.get("email") || ""
  const [loading, setLoading] = useState(false)
  const [sent, setSent] = useState(false)
  const [error, setError] = useState<string | null>(null)
+
+ const getSupabase = () => {
+ if (!supabaseRef.current) {
+ supabaseRef.current = createBrowserClient()
+ }
+ return supabaseRef.current
+ }
 
  const handleResend = async () => {
  setLoading(true)
  setError(null)
 
  try {
+ const supabase = getSupabase()
  const { error: resendError } = await supabase.auth.resend({
  type: "signup",
  email,
@@ -101,5 +109,17 @@ export default function VerifyEmailPage() {
  </div>
  </div>
  </div>
+ )
+}
+
+export default function VerifyEmailPage() {
+ return (
+ <Suspense fallback={
+ <div className="flex min-h-screen items-center justify-center">
+ <div className="text-lg">Loading...</div>
+ </div>
+ }>
+ <VerifyEmailContent />
+ </Suspense>
  )
 }
