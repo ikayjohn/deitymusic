@@ -66,9 +66,31 @@ function LoginForm() {
  console.warn("Failed to update last_login:", updateError)
  }
 
- console.log("Redirecting to:", redirectTo)
+ // Check if user is admin to determine redirect
+ let finalRedirect = redirectTo
+ try {
+ const { data: userData } = await supabase
+ .from("users")
+ .select("account_type")
+ .eq("id", signInData.user.id)
+ .single()
+
+ const isAdmin = userData?.account_type === "ADMIN" || String(userData?.account_type) === "ADMIN"
+
+ if (isAdmin && redirectTo === "/dashboard") {
+ // Override default redirect for admins
+ finalRedirect = "/admin"
+ console.log("Admin user detected, redirecting to /admin")
+ } else {
+ console.log("Redirecting to:", finalRedirect)
+ }
+ } catch (roleCheckError) {
+ console.warn("Failed to check admin role:", roleCheckError)
+ // Continue with default redirect
+ }
+
  // Use window.location for hard redirect to ensure session cookies are set
- window.location.href = redirectTo
+ window.location.href = finalRedirect
  } catch (err) {
  console.error("Login error:", err)
  setError(err instanceof Error ? err.message : "Invalid email or password")

@@ -37,9 +37,25 @@ export async function GET(request: NextRequest) {
           .from("users") as any)
           .update({ last_login_at: new Date().toISOString() })
           .eq("id", user.id)
-      }
 
-      return NextResponse.redirect(`${origin}${redirect}`)
+        // Check if user is admin for redirect
+        let finalRedirect = redirect
+        try {
+          const { data: userData } = await supabase
+            .from("users")
+            .select("account_type")
+            .eq("id", user.id)
+            .single()
+
+          const isAdmin = userData?.account_type === "ADMIN" || String(userData?.account_type) === "ADMIN"
+          if (isAdmin && redirect === "/dashboard") {
+            finalRedirect = "/admin"
+          }
+        } catch (e) {
+          console.warn("Failed to check admin role:", e)
+        }
+
+        return NextResponse.redirect(`${origin}${finalRedirect}`)
     }
   }
 
